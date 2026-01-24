@@ -25,17 +25,10 @@ public class Main implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         instance = this;
-        
-        // Initialize logger
         logger = new Logger();
-        
-        // Register packets
         PayloadTypeRegistry.playC2S().register(OptOutPacket.TYPE, OptOutPacket.STREAM_CODEC);
-        
-        // Initialize command system
         OptimizerCommand command = new OptimizerCommand();
         command.initializeCommands();
-        
         logger.info("G1ax Crystal Optimizer initialized successfully");
     }
 }

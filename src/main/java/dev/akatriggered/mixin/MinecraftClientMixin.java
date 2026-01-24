@@ -27,7 +27,8 @@ public abstract class MinecraftClientMixin {
         
         ItemStack mainHand = mc.player.getMainHandStack();
         if (mainHand.isOf(Items.END_CRYSTAL)) {
-            if (CrystalOptimizer.hitCount >= CrystalOptimizer.getPacketLimit()) {
+            // Only cancel if we've reached the packet limit and key is still pressed
+            if (mc.options.useKey.isPressed() && CrystalOptimizer.hitCount >= CrystalOptimizer.getPacketLimit()) {
                 ci.cancel();
             }
         }

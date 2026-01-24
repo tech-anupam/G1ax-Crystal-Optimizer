@@ -2,17 +2,15 @@
   "schemaVersion": 1,
   "id": "g1axcrystaloptimizer",
   "version": "${version}",
-  "name": "G1ax Crystal Optimizer",
+  "name": "G1axCrystalOptimizer",
   "description": "Advanced crystal optimization combining fast placement and server-side optimization for enhanced PvP performance",
   "authors": [
     "G1ax",
-    "Bram",
-    "Marlow",
-    "Walksy"
+    "AkaTriggered"
   ],
   "contact": {
-    "homepage": "https://github.com/G1ax/G1axCrystalOptimizer",
-    "issues": "https://github.com/G1ax/G1axCrystalOptimizer/issues"
+    "homepage": "https://github.com/AkaTriggered/G1ax-Crystal-Optimizer",
+    "issues": "https://github.com/AkaTriggered/G1ax-Crystal-Optimizer/issues"
   },
   "license": "MIT",
   "icon": "assets/g1axcrystaloptimizer/icon.png",
@@ -29,8 +27,5 @@
     "fabricloader": ">=0.15.0",
     "minecraft": "*",
     "fabric-api": "*"
-  },
-  "suggests": {
-    "midnightlib": "*"
   }
 }

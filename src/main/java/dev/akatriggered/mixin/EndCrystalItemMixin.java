@@ -44,8 +44,8 @@ public class EndCrystalItemMixin {
             if (hitResult instanceof BlockHitResult hit) {
                 BlockPos block = hit.getBlockPos();
                 if (canPlaceCrystal(mc, block)) {
-                    // Prevent item decrement by incrementing it back
-                    context.getStack().increment(1);
+                    // Allow normal placement - no duplication
+                    return;
                 }
             }
         }
