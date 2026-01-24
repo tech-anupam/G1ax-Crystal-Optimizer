@@ -24,8 +24,10 @@ import java.util.concurrent.CompletableFuture;
 public class CrystalOptimizer {
     private static final MinecraftClient mc = MinecraftClient.getInstance();
     
-    public static int hitCount;
-    public static int breakingBlockTick;
+    public static volatile int hitCount = 0;
+    public static volatile int breakingBlockTick = 0;
+    private static volatile long lastPacketTime = 0;
+    private static final long PACKET_DELAY_MS = 25;
     
     public static void tick() {
         if (!OptimizerCommand.fastCrystal) return;
@@ -34,7 +36,6 @@ public class CrystalOptimizer {
             try {
                 processOptimizedTicks();
             } catch (Exception e) {
-                // Silent error handling to prevent crashes
             }
         });
     }
@@ -54,6 +55,7 @@ public class CrystalOptimizer {
 
         if (!mc.options.useKey.isPressed()) {
             hitCount = 0;
+            return;
         }
         
         if (hitCount >= getPacketLimit()) return;
@@ -62,9 +64,7 @@ public class CrystalOptimizer {
             if (mc.options.attackKey.isPressed()) {
                 Entity target = getTargetEntity();
                 if (target != null && hitCount >= 1) {
-                    target.kill();
                     target.setRemoved(Entity.RemovalReason.KILLED);
-                    target.onRemoved();
                 }
                 hitCount++;
             }
@@ -78,6 +78,7 @@ public class CrystalOptimizer {
                 sendInteractBlockPacket(lookPos.getBlockPos(), lookPos.getSide());
                 if (canPlaceCrystal(lookPos.getBlockPos())) {
                     mc.player.swingHand(mc.player.getActiveHand());
+                    hitCount++;
                 }
             }
         }
@@ -130,6 +131,13 @@ public class CrystalOptimizer {
     }
 
     private static ActionResult sendInteractBlockPacket(BlockPos pos, Direction dir) {
+        // Add timing check to prevent packet flooding on multiplayer
+        long currentTime = System.currentTimeMillis();
+        if (currentTime - lastPacketTime < PACKET_DELAY_MS) {
+            return ActionResult.PASS;
+        }
+        lastPacketTime = currentTime;
+        
         Vec3d vec = new Vec3d(pos.getX(), pos.getY(), pos.getZ());
         Vec3i vec3i = new Vec3i((int) vec.x, (int) vec.y, (int) vec.z);
         BlockPos blockPos = new BlockPos(vec3i);

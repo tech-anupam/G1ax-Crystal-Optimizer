@@ -1,6 +1,7 @@
 package dev.akatriggered.handler;
 
 import dev.akatriggered.command.OptimizerCommand;
+import dev.akatriggered.optimizer.CrystalOptimizer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.network.packet.c2s.play.PlayerInteractEntityC2SPacket;
@@ -23,6 +24,8 @@ public class InteractHandler implements PlayerInteractEntityC2SPacket.Handler {
 
     private final MinecraftClient client;
     private final DoubleAdder damageAdder = new DoubleAdder();
+    private static volatile long lastInteractTime = 0;
+    private static final long INTERACT_COOLDOWN_MS = 50;
 
     public InteractHandler(MinecraftClient client) {
         this.client = client;
@@ -30,17 +33,20 @@ public class InteractHandler implements PlayerInteractEntityC2SPacket.Handler {
 
     @Override
     public void interact(Hand hand) {
-        // Enhanced interaction handling can be added here
     }
 
     @Override
     public void interactAt(Hand hand, Vec3d pos) {
-        // Enhanced interaction with position handling can be added here
     }
 
     @Override
     public void attack() {
         if (!OptimizerCommand.crystalOptimizer) return;
+        
+        long currentTime = System.currentTimeMillis();
+        if (currentTime - lastInteractTime < INTERACT_COOLDOWN_MS) {
+            return;
+        }
         
         HitResult hitResult = client.crosshairTarget;
         if (!(hitResult instanceof EntityHitResult entityHitResult)) {
@@ -57,6 +63,7 @@ public class InteractHandler implements PlayerInteractEntityC2SPacket.Handler {
 
         if (canDestroyCrystal(player)) {
             destroyCrystal(crystal);
+            lastInteractTime = currentTime;
         }
     }
 
@@ -65,7 +72,7 @@ public class InteractHandler implements PlayerInteractEntityC2SPacket.Handler {
 
         if (weakness == null) return true;
 
-        double baseDamage = player.getAttributeValue(EntityAttributes.GENERIC_ATTACK_DAMAGE);
+        double baseDamage = player.getAttributeValue(EntityAttributes.ATTACK_DAMAGE);
         double weaknessPenalty = 4.0D * (weakness.getAmplifier() + 1);
 
         if (baseDamage > weaknessPenalty + 5.0D) {
@@ -76,7 +83,7 @@ public class InteractHandler implements PlayerInteractEntityC2SPacket.Handler {
     }
 
     private double calculateTotalDamage(ClientPlayerEntity player) {
-        double baseDamage = player.getAttributeValue(EntityAttributes.GENERIC_ATTACK_DAMAGE);
+        double baseDamage = player.getAttributeValue(EntityAttributes.ATTACK_DAMAGE);
         double weaponDamage = getWeaponDamage(player.getMainHandStack());
 
         StatusEffectInstance strength = player.getStatusEffect(StatusEffects.STRENGTH);

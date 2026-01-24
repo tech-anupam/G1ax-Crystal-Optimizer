@@ -9,7 +9,7 @@ import net.minecraft.util.Identifier;
 public record OptOutPacket(boolean optOut) implements CustomPayload {
     public static final CustomPayload.Id<OptOutPacket> TYPE = new CustomPayload.Id<>(Identifier.of("g1axcrystaloptimizer", "opt_out"));
     public static final PacketCodec<RegistryByteBuf, OptOutPacket> STREAM_CODEC = PacketCodec.tuple(
-            PacketCodecs.BOOL, OptOutPacket::optOut,
+            PacketCodecs.BOOLEAN, OptOutPacket::optOut,
             OptOutPacket::new
     );
 
