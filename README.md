@@ -159,7 +159,7 @@ copies or substantial portions of the Software.
 
 ### Reporting Bugs
 If you encounter any issues:
-1. Check [existing issues](https://github.com/G1ax/G1axCrystalOptimizer/issues) first
+1. Check [existing issues](https://github.com/AkaTriggered/G1ax-Crystal-Optimizer/issues) first
 2. Include your Minecraft version, Fabric Loader version, and mod version
 3. Provide steps to reproduce the issue
 4. Include relevant log files if possible
@@ -168,7 +168,7 @@ If you encounter any issues:
 Have an idea for improvement? Open an issue with the `enhancement` label!
 
 ### Community
-- **GitHub Discussions**: Use [Discussions](https://github.com/G1ax/G1axCrystalOptimizer/discussions) for general questions
+- **GitHub Discussions**: Use [Discussions](https://github.com/AkaTriggered/G1ax-Crystal-Optimizer/discussions) for general questions
 
 ## 📈 Roadmap
 
