@@ -41,29 +41,35 @@ public class InteractHandler implements PlayerInteractEntityC2SPacket.Handler {
 
     @Override
     public void attack() {
-        if (!OptimizerCommand.crystalOptimizer) return;
-        
-        long currentTime = System.currentTimeMillis();
-        if (currentTime - lastInteractTime < INTERACT_COOLDOWN_MS) {
-            return;
-        }
-        
-        HitResult hitResult = client.crosshairTarget;
-        if (!(hitResult instanceof EntityHitResult entityHitResult)) {
-            return;
-        }
+        try {
+            if (!OptimizerCommand.crystalOptimizer) return;
+            
+            long currentTime = System.currentTimeMillis();
+            if (currentTime - lastInteractTime < INTERACT_COOLDOWN_MS) {
+                return;
+            }
+            
+            if (client == null) return;
+            
+            HitResult hitResult = client.crosshairTarget;
+            if (!(hitResult instanceof EntityHitResult entityHitResult)) {
+                return;
+            }
 
-        Entity entity = entityHitResult.getEntity();
-        if (!(entity instanceof EndCrystalEntity crystal)) {
-            return;
-        }
+            Entity entity = entityHitResult.getEntity();
+            if (!(entity instanceof EndCrystalEntity crystal)) {
+                return;
+            }
 
-        ClientPlayerEntity player = client.player;
-        if (player == null) return;
+            ClientPlayerEntity player = client.player;
+            if (player == null) return;
 
-        if (canDestroyCrystal(player)) {
-            destroyCrystal(crystal);
-            lastInteractTime = currentTime;
+            if (canDestroyCrystal(player)) {
+                destroyCrystal(crystal);
+                lastInteractTime = currentTime;
+            }
+        } catch (Exception e) {
+            // Prevent crashes from mod conflicts
         }
     }
 

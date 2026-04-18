@@ -30,24 +30,27 @@ public class EndCrystalItemMixin {
 
     @Inject(method = "useOnBlock", at = @At("HEAD"), cancellable = true)
     private void onUseOnBlock(ItemUsageContext context, CallbackInfoReturnable<ActionResult> cir) {
-        if (!OptimizerCommand.fastCrystal) return;
-        
-        MinecraftClient mc = MinecraftClient.getInstance();
-        if (mc.player == null || mc.world == null) return;
-        
-        ItemStack mainHandStack = mc.player.getMainHandStack();
-        if (!mainHandStack.isOf(Items.END_CRYSTAL)) return;
+        try {
+            if (!OptimizerCommand.fastCrystal) return;
+            
+            MinecraftClient mc = MinecraftClient.getInstance();
+            if (mc == null || mc.player == null || mc.world == null) return;
+            
+            ItemStack mainHandStack = mc.player.getMainHandStack();
+            if (mainHandStack == null || !mainHandStack.isOf(Items.END_CRYSTAL)) return;
 
-        BlockHitResult lookPos = getLookPosition(mc);
-        if (isValidPlacement(mc, lookPos.getBlockPos())) {
-            HitResult hitResult = mc.crosshairTarget;
-            if (hitResult instanceof BlockHitResult hit) {
-                BlockPos block = hit.getBlockPos();
-                if (canPlaceCrystal(mc, block)) {
-                    // Allow normal placement - no duplication
-                    return;
+            BlockHitResult lookPos = getLookPosition(mc);
+            if (lookPos != null && isValidPlacement(mc, lookPos.getBlockPos())) {
+                HitResult hitResult = mc.crosshairTarget;
+                if (hitResult instanceof BlockHitResult hit) {
+                    BlockPos block = hit.getBlockPos();
+                    if (canPlaceCrystal(mc, block)) {
+                        return;
+                    }
                 }
             }
+        } catch (Exception e) {
+            // Silently handle conflicts with other crystal mods
         }
     }
 
@@ -69,30 +72,30 @@ public class EndCrystalItemMixin {
     }
 
     private Vec3d getLookVector(MinecraftClient mc) {
-        float f = (float) Math.PI / 180;
-        float pi = (float) Math.PI;
-        float f1 = MathHelper.cos(-mc.player.getYaw() * f - pi);
-        float f2 = MathHelper.sin(-mc.player.getYaw() * f - pi);
-        float f3 = -MathHelper.cos(-mc.player.getPitch() * f);
-        float f4 = MathHelper.sin(-mc.player.getPitch() * f);
-        return new Vec3d(f2 * f3, f4, f1 * f3).normalize();
+        return mc.player.getRotationVec(1.0F);
     }
 
     private boolean canPlaceCrystal(MinecraftClient mc, BlockPos block) {
-        BlockState blockState = mc.world.getBlockState(block);
-        if (!blockState.isOf(Blocks.OBSIDIAN) && !blockState.isOf(Blocks.BEDROCK)) {
+        try {
+            if (mc == null || mc.world == null || block == null) return false;
+            
+            BlockState blockState = mc.world.getBlockState(block);
+            if (!blockState.isOf(Blocks.OBSIDIAN) && !blockState.isOf(Blocks.BEDROCK)) {
+                return false;
+            }
+            
+            BlockPos above = block.up();
+            if (!mc.world.isAir(above)) return false;
+            
+            double x = above.getX();
+            double y = above.getY();
+            double z = above.getZ();
+            
+            List<Entity> entities = mc.world.getOtherEntities(null, 
+                new Box(x, y, z, x + 1.0D, y + 2.0D, z + 1.0D));
+            return entities.isEmpty();
+        } catch (Exception e) {
             return false;
         }
-        
-        BlockPos above = block.up();
-        if (!mc.world.isAir(above)) return false;
-        
-        double x = above.getX();
-        double y = above.getY();
-        double z = above.getZ();
-        
-        List<Entity> entities = mc.world.getOtherEntities(null, 
-            new Box(x, y, z, x + 1.0D, y + 2.0D, z + 1.0D));
-        return entities.isEmpty();
     }
 }

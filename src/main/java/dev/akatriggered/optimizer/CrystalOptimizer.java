@@ -41,46 +41,51 @@ public class CrystalOptimizer {
     }
     
     private static void processOptimizedTicks() {
-        if (mc.player == null || mc.world == null) return;
-        
-        ItemStack mainHandStack = mc.player.getMainHandStack();
+        try {
+            if (mc == null || mc.player == null || mc.world == null) return;
+            
+            ItemStack mainHandStack = mc.player.getMainHandStack();
+            if (mainHandStack == null) return;
 
-        if (mc.options.attackKey.isPressed()) {
-            breakingBlockTick++;
-        } else {
-            breakingBlockTick = 0;
-        }
-
-        if (breakingBlockTick > 2) return;
-
-        if (!mc.options.useKey.isPressed()) {
-            hitCount = 0;
-            return;
-        }
-        
-        if (hitCount >= getPacketLimit()) return;
-
-        if (isLookingAtTargetEntity()) {
             if (mc.options.attackKey.isPressed()) {
-                Entity target = getTargetEntity();
-                if (target != null && hitCount >= 1) {
-                    target.setRemoved(Entity.RemovalReason.KILLED);
-                }
-                hitCount++;
+                breakingBlockTick++;
+            } else {
+                breakingBlockTick = 0;
             }
-        }
 
-        if (!mainHandStack.isOf(Items.END_CRYSTAL)) return;
+            if (breakingBlockTick > 2) return;
 
-        if (mc.options.useKey.isPressed()) {
-            BlockHitResult lookPos = getLookPosition();
-            if (isValidCrystalPlacement(lookPos.getBlockPos())) {
-                sendInteractBlockPacket(lookPos.getBlockPos(), lookPos.getSide());
-                if (canPlaceCrystal(lookPos.getBlockPos())) {
-                    mc.player.swingHand(mc.player.getActiveHand());
+            if (!mc.options.useKey.isPressed()) {
+                hitCount = 0;
+                return;
+            }
+            
+            if (hitCount >= getPacketLimit()) return;
+
+            if (isLookingAtTargetEntity()) {
+                if (mc.options.attackKey.isPressed()) {
+                    Entity target = getTargetEntity();
+                    if (target != null && hitCount >= 1) {
+                        target.setRemoved(Entity.RemovalReason.KILLED);
+                    }
                     hitCount++;
                 }
             }
+
+            if (!mainHandStack.isOf(Items.END_CRYSTAL)) return;
+
+            if (mc.options.useKey.isPressed()) {
+                BlockHitResult lookPos = getLookPosition();
+                if (lookPos != null && isValidCrystalPlacement(lookPos.getBlockPos())) {
+                    sendInteractBlockPacket(lookPos.getBlockPos(), lookPos.getSide());
+                    if (canPlaceCrystal(lookPos.getBlockPos())) {
+                        mc.player.swingHand(mc.player.getActiveHand());
+                        hitCount++;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            // Prevent crashes from mod conflicts
         }
     }
 
@@ -121,13 +126,7 @@ public class CrystalOptimizer {
     }
 
     private static Vec3d getLookVector() {
-        float f = (float) Math.PI / 180;
-        float pi = (float) Math.PI;
-        float f1 = MathHelper.cos(-mc.player.getYaw() * f - pi);
-        float f2 = MathHelper.sin(-mc.player.getYaw() * f - pi);
-        float f3 = -MathHelper.cos(-mc.player.getPitch() * f);
-        float f4 = MathHelper.sin(-mc.player.getPitch() * f);
-        return new Vec3d(f2 * f3, f4, f1 * f3).normalize();
+        return mc.player.getRotationVec(1.0F);
     }
 
     private static ActionResult sendInteractBlockPacket(BlockPos pos, Direction dir) {
@@ -157,20 +156,26 @@ public class CrystalOptimizer {
     }
 
     private static boolean canPlaceCrystal(BlockPos block) {
-        BlockState blockState = mc.world.getBlockState(block);
-        if (!blockState.isOf(Blocks.OBSIDIAN) && !blockState.isOf(Blocks.BEDROCK)) {
+        try {
+            if (mc == null || mc.world == null || block == null) return false;
+            
+            BlockState blockState = mc.world.getBlockState(block);
+            if (!blockState.isOf(Blocks.OBSIDIAN) && !blockState.isOf(Blocks.BEDROCK)) {
+                return false;
+            }
+            
+            BlockPos above = block.up();
+            if (!mc.world.isAir(above)) return false;
+            
+            double x = above.getX();
+            double y = above.getY();
+            double z = above.getZ();
+            
+            List<Entity> entities = mc.world.getOtherEntities(null, 
+                new Box(x, y, z, x + 1.0D, y + 2.0D, z + 1.0D));
+            return entities.isEmpty();
+        } catch (Exception e) {
             return false;
         }
-        
-        BlockPos above = block.up();
-        if (!mc.world.isAir(above)) return false;
-        
-        double x = above.getX();
-        double y = above.getY();
-        double z = above.getZ();
-        
-        List<Entity> entities = mc.world.getOtherEntities(null, 
-            new Box(x, y, z, x + 1.0D, y + 2.0D, z + 1.0D));
-        return entities.isEmpty();
     }
 }
