@@ -1,14 +1,15 @@
 {
-  "required": true,
+  "required": false,
   "minVersion": "0.8",
   "package": "dev.akatriggered.mixin",
   "compatibilityLevel": "JAVA_21",
   "client": [
     "MinecraftClientMixin",
+    "MinecraftClientAccessor",
     "EndCrystalItemMixin",
     "ClientConnectionMixin"
   ],
   "injectors": {
-    "defaultRequire": 1
+    "defaultRequire": 0
   }
 }

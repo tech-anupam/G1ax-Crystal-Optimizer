@@ -24,7 +24,7 @@
     "g1axcrystaloptimizer.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.15.0",
+    "fabricloader": "*",
     "minecraft": "*",
     "fabric-api": "*"
   }
