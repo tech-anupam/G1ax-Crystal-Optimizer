@@ -1,20 +1,20 @@
-# 🔮 G1ax Crystal Optimizer
+# 🔮 G1axCrystalOptimizer
+
+### High-Performance Crystal PvP Optimization for Minecraft (Fabric)
 
 <div align="center">
 
 ![Mod Icon](src/main/resources/assets/g1axcrystaloptimizer/icon.png)
 
-### **High-Performance Crystal PvP Optimization for Minecraft (Fabric)**
-
-Developed by [**tech.anupam**](https://modrinth.com/user/tech.anupam)
+Developed by [**tech.anupam**](https://modrinth.com/user/tech.anupam) & the G1ax Team
 
 [![Modrinth Downloads](https://img.shields.io/modrinth/dt/Xqnzyc08?color=00AF5C&label=Modrinth%20Downloads&style=for-the-badge)](https://modrinth.com/mod/g1axcrystaloptimizer)
 [![Modrinth Version](https://img.shields.io/modrinth/v/Xqnzyc08?color=00AF5C&label=Modrinth%20Version&style=for-the-badge)](https://modrinth.com/mod/g1axcrystaloptimizer)
 [![Modrinth Followers](https://img.shields.io/modrinth/followers/Xqnzyc08?color=00AF5C&label=Followers&style=for-the-badge)](https://modrinth.com/mod/g1axcrystaloptimizer)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
-[![Discord](https://img.shields.io/badge/Discord-Join-5865F2.svg?style=for-the-badge)](https://discord.gg/Dcmmg3x7M7)
+[![Discord](https://img.shields.io/badge/Discord-Join-5865F2.svg?style=for-the-badge)](https://discord.gg/vF5bE4strk)
 
-[Download on Modrinth](https://modrinth.com/mod/g1axcrystaloptimizer) • [GitHub Repository](https://github.com/tech-anupam/G1ax-Crystal-Optimizer) • [Report Issues](https://github.com/tech-anupam/G1ax-Crystal-Optimizer/issues) • [Discord Support](https://discord.gg/Dcmmg3x7M7)
+[Download on Modrinth](https://modrinth.com/mod/g1axcrystaloptimizer) • [GitHub Repository](https://github.com/AkaTriggered/G1ax-Crystal-Optimizer) • [Report Issues](https://github.com/AkaTriggered/G1ax-Crystal-Optimizer/issues) • [Discord Support](https://discord.gg/vF5bE4strk)
 
 </div>
 
@@ -22,45 +22,65 @@ Developed by [**tech.anupam**](https://modrinth.com/user/tech.anupam)
 
 ## 🚀 Overview
 
-**G1ax Crystal Optimizer** is a high-performance Fabric client mod designed to optimize crystal PvP gameplay. By bypassing client-side placement cooldowns and managing packet traffic intelligently, it provides a seamless and responsive PvP experience. Running entirely client-side, it offers customizable modes to align with different server rules and anticheat configurations.
+**G1ax Crystal Optimizer** is a client-side Fabric performance mod designed to optimize crystal PvP gameplay. By bypassing client-side placement cooldowns, predicting crystal breaks, and managing packet traffic dynamically, it provides a highly responsive PvP experience. Running entirely client-side, it offers customizable modes to align with different server rules and anticheat configurations.
+
+---
+
+## 🤔 Why Choose G1ax Crystal Optimizer?
+
+- ⚡ **Zero Visual Delay**: Instantly removes broken crystals visually on the client side, eliminating delay while waiting for server verification.
+- 📶 **Dynamic Latency Adaptation**: Evaluates real-time connection latency using a moving average and automatically adjusts packet rates (2–4 packets per tick).
+- 🛡️ **Anticheat Compliance**: Provides a lightweight **tweak mode** that bypasses hardcoded cooldowns while retaining vanilla validation paths.
+- 🔧 **Startup Safeguards**: Built-in environment scanner checks Minecraft versions, Fabric API, and mixin targets to prevent client crashes.
+- 🤝 **Seamless Coexistence**: Fully compatible with other PvP helper mods without thread contention or rendering crashes.
 
 ---
 
 ## ⚡ Mode Configuration
 
-Adjust the mod's behavior dynamically in-game with simple command triggers:
+Configure the mod's behavior dynamically in-game with `/g1axoptimizer <default|tweak|off>`:
 
-### `/g1axoptimizer tweak` — AC-Safe Mode
+### 🛡️ `/g1axoptimizer tweak` — AC-Safe Mode
 Specifically designed for competitive environments with strict server anticheat solutions.
-- **Bypasses 4-tick Placement Cooldown**: Overrides Minecraft's hardcoded `itemUseCooldown` (4 ticks/200ms) to trigger placement checks every tick (~50ms).
-- **100% Vanilla Code Paths**: Uses the default client logic and placing mechanics. No custom packet injection, no predictive client-side entity removals, and no structural modifications. 
-
-| Feature | `Tweak` Mode | `Default` Mode |
-|---|:---:|:---:|
-| Bypass `itemUseCooldown` (every tick) | ✅ | ✅ |
-| Visual client-side crystal removal | ❌ | ✅ |
-| Custom `interactBlock` packets | ❌ | ✅ |
-| Ping-adaptive rate limits | ❌ | ✅ |
-| Strict vanilla validation path | ✅ | ❌ |
+- **Bypasses Placement Cooldown**: Resets Minecraft's hardcoded `itemUseCooldown` (4 ticks/200ms) to trigger placement checks every tick (~50ms).
+- **100% Vanilla Code Paths**: Uses the default client logic and placing mechanics. No custom packet injection, no predictive client-side entity removals, and no structural modifications.
 
 ---
 
-### `/g1axoptimizer default` — Full Performance Mode
+### 🚀 `/g1axoptimizer default` — Full Performance Mode
 Optimized for anarchy and PvP servers where custom optimization mods are permitted.
-- **Client-Side Visual Removal**: Instantly removes broken crystals visually on the client side, eliminating delays waiting for server packet confirmation.
-- **Direct Block Interaction Packets**: Bypasses slow vanilla check sequences to send direct interaction requests.
-- **Ping-Adaptive Rate Limiter**: Dynamically adjusts placement packet rate (sending 2–4 packets per tick) based on your real-time server latency.
+- **Client-Side Visual Removal**: Instantly removes broken crystals visually, providing zero-delay feedback without waiting for server response packets.
+- **Direct Block Interaction**: Bypasses default validation paths to send direct block interaction requests.
+- **Performance Guard**: Dynamically schedules packet rates and predictions using a nanosecond-precision adaptive EMA guard.
 
 ---
 
-### `/g1axoptimizer off` — Vanilla Behavior
-Disables all modifications. Restores the game's default PvP engine and behavior.
+### ❌ `/g1axoptimizer off` — Vanilla Behavior
+Disables all optimizations. Restores the default Minecraft PvP engine.
+
+| Feature | `tweak` Mode | `default` Mode | `off` (Vanilla) |
+|---|:---:|:---:|:---:|
+| **Bypass `itemUseCooldown`** | Every Tick (~50ms) | Every Tick (~50ms) | Vanilla (4 Ticks / 200ms) |
+| **Visual Client-Side Break Prediction** | ❌ | ✅ | ❌ |
+| **Direct Packet Routing** | ❌ | ✅ | ❌ |
+| **Ping-Adaptive Packet Rates** | ❌ | ✅ | ❌ |
+| **Strict Vanilla Validation Path** | ✅ | ❌ | ✅ |
+
+---
+
+## 📊 Performance Comparison (70ms)
+
+*slowed down to show more detail*
+
+| With Mod | Without Mod |
+|:---:|:---:|
+| ![With Mod](https://raw.githubusercontent.com/AkaTriggered/G1ax-Crystal-Optimizer/main/media/with_mod.gif) | ![Without Mod](https://raw.githubusercontent.com/AkaTriggered/G1ax-Crystal-Optimizer/main/media/without_mod.gif) |
 
 ---
 
 ## 🔧 Diagnostics & Compatibility Engine
 
-To guarantee stable execution across versions and mods, G1ax Crystal Optimizer includes an autonomous pre-flight diagnostics system:
+To guarantee stable execution across versions and mods, G1ax Crystal Optimizer includes an autonomous diagnostics system:
 
 ### 1. Pre-Flight Compatibility Verification (`CompatibilityChecker.java`)
 On startup, the mod verifies environmental components:
@@ -105,22 +125,33 @@ A clean, specialized log file is output to:
 ```
 src/main/java/dev/akatriggered/
 ├── Main.java                        (Mod initialization and logger setup)
+├── cache/
+│   └── OptOutCache.java             (Per-server opt-out status retention)
 ├── command/
 │   └── OptimizerCommand.java        (Dynamic in-game mode selections and instructions)
-├── handler/
-│   └── InteractHandler.java        (Stub for historical compatibility hooks)
+├── listener/
+│   ├── ConnectEventListener.java    (Handles server connect handshake)
+│   ├── DisconnectEventListener.java (Resets session flags on disconnect)
+│   └── OptOutPacketListener.java    (Processes server-requested opt-out packets)
 ├── mixin/
 │   ├── MinecraftClientAccessor.java (Exposes native item cooldown properties)
 │   ├── MinecraftClientMixin.java    (Orchestrates tick hooks and mode routing)
-│   ├── EndCrystalItemMixin.java     (Implements fast placement packet overrides)
 │   └── ClientConnectionMixin.java   (Intercepts outgoing packets for visual removal)
 ├── optimizer/
 │   └── CrystalOptimizer.java        (Core engine managing packet rates and pings)
 ├── packets/
-│   └── OptOutPacket.java            (Client opt-out network signaling payload)
+│   ├── OptOutAckPacket.java         (Client acknowledgment packet)
+│   ├── OptOutPacket.java            (Optional client announcement payload)
+│   ├── ServerOptOutPacket.java      (S2C server-requested disable packet)
+│   └── VersionPacket.java           (C2S client version payload)
 └── util/
+    ├── ConnectionUtil.java          (Generates server identification keys)
+    ├── PerformanceGuard.java        (Nanosecond-precision adaptive scheduler)
+    ├── VersionUtil.java             (Parses project version data)
     ├── Logger.java                  (Autonomous formatted file logger)
-    └── CompatibilityChecker.java    (Startup diagnostics system with fix instructions)
+    ├── CompatibilityChecker.java    (Startup diagnostics check)
+    └── datastructure/
+        └── EvictingList.java        (Fixed-size eviction list structure)
 ```
 
 ---
@@ -128,9 +159,9 @@ src/main/java/dev/akatriggered/
 ## 🔨 Building from Source
 
 ```bash
-git clone https://github.com/tech-anupam/G1ax-Crystal-Optimizer.git
+git clone https://github.com/AkaTriggered/G1ax-Crystal-Optimizer.git
 cd G1ax-Crystal-Optimizer
-.\gradlew.bat build
+.\gradlew build
 ```
 The compiled mod JAR will be output in `build/libs/`.
 
@@ -144,6 +175,6 @@ Distributed under the MIT License. See [LICENSE](LICENSE) for details.
 
 <div align="center">
 
-Made with ❤️ by [**tech.anupam**](https://modrinth.com/user/tech.anupam) & the G1ax Team • [Join Discord](https://discord.gg/Dcmmg3x7M7)
+Made with ❤️ by the G1ax Team & AkaTriggered • [Join Discord](https://discord.gg/vF5bE4strk)
 
 </div>
