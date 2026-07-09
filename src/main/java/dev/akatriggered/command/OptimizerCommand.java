@@ -4,7 +4,9 @@ import dev.akatriggered.Main;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 
 public class OptimizerCommand {
 
@@ -90,10 +92,28 @@ public class OptimizerCommand {
         msg(PREFIX + "§c" + message + ERR_SUFFIX);
     }
 
-    public static void msg(String message) {
+    public static void msg(String raw) {
         MinecraftClient mc = MinecraftClient.getInstance();
         if (mc.player == null || mc.inGameHud == null || mc.inGameHud.getChatHud() == null) return;
-        mc.inGameHud.getChatHud().addMessage(Text.literal(message));
+        mc.inGameHud.getChatHud().addMessage(fromLegacy(raw));
+    }
+
+    private static MutableText fromLegacy(String raw) {
+        MutableText root = Text.literal("");
+        String[] parts = raw.split("§");
+        if (parts.length == 0) return root;
+        if (!raw.startsWith("§")) root.append(Text.literal(parts[0]));
+        for (int i = raw.startsWith("§") ? 0 : 1; i < parts.length; i++) {
+            String part = parts[i];
+            if (part.isEmpty()) continue;
+            char code = part.charAt(0);
+            String text = part.length() > 1 ? part.substring(1) : "";
+            Formatting fmt = Formatting.byCode(code);
+            MutableText seg = Text.literal(text);
+            if (fmt != null) seg = seg.formatted(fmt);
+            root.append(seg);
+        }
+        return root;
     }
 
     public static boolean inGame() {

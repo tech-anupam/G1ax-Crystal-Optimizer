@@ -3,6 +3,7 @@ package dev.akatriggered;
 import dev.akatriggered.command.OptimizerCommand;
 import dev.akatriggered.util.CompatibilityChecker;
 import dev.akatriggered.util.Logger;
+import dev.akatriggered.util.UpdateChecker;
 import lombok.Getter;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
@@ -23,6 +24,7 @@ public class Main implements ClientModInitializer {
         logger = new Logger();
 
         CompatibilityChecker.runAll(logger);
+        UpdateChecker.init(logger);
 
         tryRegisterPacket();
 
