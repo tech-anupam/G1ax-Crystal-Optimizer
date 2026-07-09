@@ -5,6 +5,7 @@ import dev.akatriggered.cache.OptOutCache;
 import dev.akatriggered.packets.OptOutAckPacket;
 import dev.akatriggered.packets.ServerOptOutPacket;
 import dev.akatriggered.util.ConnectionUtil;
+import dev.akatriggered.util.HoverEventResolver;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.HoverEvent;
@@ -48,7 +49,7 @@ public final class OptOutPacketListener {
             .append(Text.literal("• Usually for rules enforcement or compatibility.\n").formatted(Formatting.GRAY))
             .append(Text.literal("\nApplies only while you stay on this server.").formatted(Formatting.ITALIC));
         Style hoverStyle = Style.EMPTY
-            .withHoverEvent(new HoverEvent.ShowText(hover))
+            .withHoverEvent(HoverEventResolver.createShowTextHoverEvent(hover))
             .withColor(Formatting.YELLOW);
         Text msg = Text.literal("Optimizer disabled on this server.").setStyle(hoverStyle);
         return Main.PREFIX.copy().setStyle(hoverStyle).append(msg);

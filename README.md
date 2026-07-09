@@ -1,4 +1,4 @@
-# 🔮 G1axCrystalOptimizer
+# 🔮 G1ax Crystal Optimizer
 
 ### High-Performance Crystal PvP Optimization for Minecraft (Fabric)
 
@@ -14,7 +14,7 @@ Developed by [**tech.anupam**](https://modrinth.com/user/tech.anupam) & the G1ax
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
 [![Discord](https://img.shields.io/badge/Discord-Join-5865F2.svg?style=for-the-badge)](https://discord.gg/vF5bE4strk)
 
-[Download on Modrinth](https://modrinth.com/mod/g1axcrystaloptimizer) • [GitHub Repository](https://github.com/AkaTriggered/G1ax-Crystal-Optimizer) • [Report Issues](https://github.com/AkaTriggered/G1ax-Crystal-Optimizer/issues) • [Discord Support](https://discord.gg/vF5bE4strk)
+[Download on Modrinth](https://modrinth.com/mod/g1axcrystaloptimizer) • [GitHub Repository](https://github.com/tech-anupam/G1ax-Crystal-Optimizer) • [Report Issues](https://github.com/tech-anupam/G1ax-Crystal-Optimizer/issues) • [Discord Support](https://discord.gg/vF5bE4strk)
 
 </div>
 
@@ -74,7 +74,7 @@ Disables all optimizations. Restores the default Minecraft PvP engine.
 
 | With Mod | Without Mod |
 |:---:|:---:|
-| ![With Mod](https://raw.githubusercontent.com/AkaTriggered/G1ax-Crystal-Optimizer/main/media/with_mod.gif) | ![Without Mod](https://raw.githubusercontent.com/AkaTriggered/G1ax-Crystal-Optimizer/main/media/without_mod.gif) |
+| ![With Mod](https://raw.githubusercontent.com/tech-anupam/G1ax-Crystal-Optimizer/main/media/with_mod.gif) | ![Without Mod](https://raw.githubusercontent.com/tech-anupam/G1ax-Crystal-Optimizer/main/media/without_mod.gif) |
 
 ---
 
@@ -118,6 +118,22 @@ A clean, specialized log file is output to:
   - Safe Crystals
   - Knockback Optimizer
 
+### ⚡ Sealed Interface ActionResult Classloading Crash (Fixed)
+- **Problem**: Minecraft 1.21.2+ refactored `ActionResult` from an enum to a sealed interface. Compiling against 1.21.11 caused the mixin to look for version-specific inner classes (like `class_9859`) which did not exist on older versions (like 1.21/1.21.1), causing a launch crash.
+- **Solution**: Implemented `ActionResultResolver.java` using reflection to dynamically retrieve enum constants or sealed interface instances at runtime, completely avoiding any compile-time bytecode dependency on the inner classes.
+
+### 🔍 Production Client Compatibility Checker Warnings (Fixed)
+- **Problem**: In obfuscated production client environments, the `CompatibilityChecker` failed to locate standard named classes (`MinecraftClient`, `EndCrystalItem`, etc.) and reported incorrect mixin incompatibility warnings, along with printing `Minecraft: unknown` due to obfuscated method names on `SharedConstants`.
+- **Solution**: Updated class presence checks to support both named and intermediary classnames (`class_310`, `class_1774`, `class_2535`), and replaced version detection reflection with a robust query to Fabric Loader's mod metadata index for Minecraft.
+
+### 🌐 NoSuchMethodError Payload Registry Crash (Fixed)
+- **Problem**: Launching on clients running older Fabric API versions caused startup crash with `NoSuchMethodError` when calling packet registration methods on `PayloadTypeRegistry`.
+- **Solution**: Replaced direct `PayloadTypeRegistry` registrations with a dynamic, reflection-based packet loader that gracefully handles missing classes or API signature changes without crashing.
+
+### 📜 HoverEvent ShowText NoClassDefFoundError Crash (Fixed)
+- **Problem**: Minecraft 1.21.2+ introduced `HoverEvent.ShowText` (obfuscated as `class_2568$class_10613`). When compiled against 1.21.11, the mod contained a direct static reference to this inner class, causing a startup crash (`NoClassDefFoundError`) when run on Minecraft 1.21/1.21.1.
+- **Solution**: Implemented `HoverEventResolver.java` using reflection to dynamically instantiate `HoverEvent.ShowText` on 1.21.2+ platforms while falling back to passing the `Text` component directly on older 1.21/1.21.1 installations, ensuring zero compile-time classloading dependencies.
+
 ---
 
 ## 📦 Project Architecture
@@ -136,6 +152,7 @@ src/main/java/dev/akatriggered/
 ├── mixin/
 │   ├── MinecraftClientAccessor.java (Exposes native item cooldown properties)
 │   ├── MinecraftClientMixin.java    (Orchestrates tick hooks and mode routing)
+│   ├── EndCrystalItemMixin.java     (Bypasses default client placement constraints)
 │   └── ClientConnectionMixin.java   (Intercepts outgoing packets for visual removal)
 ├── optimizer/
 │   └── CrystalOptimizer.java        (Core engine managing packet rates and pings)
@@ -148,6 +165,7 @@ src/main/java/dev/akatriggered/
     ├── ConnectionUtil.java          (Generates server identification keys)
     ├── PerformanceGuard.java        (Nanosecond-precision adaptive scheduler)
     ├── VersionUtil.java             (Parses project version data)
+    ├── ActionResultResolver.java    (Resolves cross-version ActionResult constants)
     ├── Logger.java                  (Autonomous formatted file logger)
     ├── CompatibilityChecker.java    (Startup diagnostics check)
     └── datastructure/
@@ -175,6 +193,6 @@ Distributed under the MIT License. See [LICENSE](LICENSE) for details.
 
 <div align="center">
 
-Made with ❤️ by the G1ax Team & AkaTriggered • [Join Discord](https://discord.gg/vF5bE4strk)
+Made with ❤️ by the G1ax Team & tech.anupam • [Join Discord](https://discord.gg/vF5bE4strk)
 
 </div>

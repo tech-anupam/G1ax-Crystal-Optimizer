@@ -64,30 +64,51 @@ public class Main implements ClientModInitializer {
     }
 
     private void registerPackets() {
-        PayloadTypeRegistry.playS2C().register(ServerOptOutPacket.TYPE, ServerOptOutPacket.STREAM_CODEC);
-        PayloadTypeRegistry.configurationS2C().register(ServerOptOutPacket.TYPE, ServerOptOutPacket.STREAM_CODEC);
-        PayloadTypeRegistry.playC2S().register(OptOutAckPacket.TYPE, OptOutAckPacket.STREAM_CODEC);
-        PayloadTypeRegistry.playC2S().register(VersionPacket.TYPE, VersionPacket.STREAM_CODEC);
-
         try {
-            Class<?> reg = Class.forName("net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry");
-            var playC2S = reg.getMethod("playC2S");
-            Object registry = playC2S.invoke(null);
-            for (var m : registry.getClass().getMethods()) {
-                if (m.getName().equals("register") && m.getParameterCount() == 2) {
-                    m.invoke(registry,
-                        dev.akatriggered.packets.OptOutPacket.TYPE,
-                        dev.akatriggered.packets.OptOutPacket.STREAM_CODEC
-                    );
-                    logger.info("OptOut packet registered");
-                    return;
-                }
+            Class<?> registryClass = Class.forName("net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry");
+
+            // register playS2C packets
+            try {
+                Object playS2CRegistry = registryClass.getMethod("playS2C").invoke(null);
+                registerPacket(playS2CRegistry, ServerOptOutPacket.TYPE, ServerOptOutPacket.STREAM_CODEC);
+            } catch (Throwable t) {
+                logger.warn("Skipped playS2C registry: " + t.getMessage());
             }
-        } catch (NoSuchMethodException e) {
-            logger.warn("OptOut packet skipped — Fabric API version mismatch (non-fatal)");
-        } catch (Exception e) {
-            logger.warn("OptOut packet skipped: " + e.getMessage());
+
+            // register configurationS2C packets
+            try {
+                Object configS2CRegistry = registryClass.getMethod("configurationS2C").invoke(null);
+                registerPacket(configS2CRegistry, ServerOptOutPacket.TYPE, ServerOptOutPacket.STREAM_CODEC);
+            } catch (Throwable t) {
+                logger.warn("Skipped configurationS2C registry: " + t.getMessage());
+            }
+
+            // register playC2S packets
+            try {
+                Object playC2SRegistry = registryClass.getMethod("playC2S").invoke(null);
+                registerPacket(playC2SRegistry, OptOutAckPacket.TYPE, OptOutAckPacket.STREAM_CODEC);
+                registerPacket(playC2SRegistry, VersionPacket.TYPE, VersionPacket.STREAM_CODEC);
+                registerPacket(playC2SRegistry, dev.akatriggered.packets.OptOutPacket.TYPE, dev.akatriggered.packets.OptOutPacket.STREAM_CODEC);
+                logger.info("OptOut and Version packets registered");
+            } catch (Throwable t) {
+                logger.warn("Skipped playC2S registry: " + t.getMessage());
+            }
+
+        } catch (ClassNotFoundException e) {
+            logger.warn("PayloadTypeRegistry not found — skipping packet registration (non-fatal)");
+        } catch (Throwable e) {
+            logger.warn("Packet registration failed: " + e.getMessage());
         }
+    }
+
+    private void registerPacket(Object registry, Object type, Object codec) throws Exception {
+        for (var method : registry.getClass().getMethods()) {
+            if (method.getName().equals("register") && method.getParameterCount() == 2) {
+                method.invoke(registry, type, codec);
+                return;
+            }
+        }
+        throw new NoSuchMethodException("register method not found on " + registry.getClass().getName());
     }
 
     private void registerListeners() {

@@ -52,7 +52,7 @@ public class CrystalOptimizer {
             )
         );
 
-        if (result != null && (result == ActionResult.SUCCESS || result == ActionResult.CONSUME)) {
+        if (dev.akatriggered.util.ActionResultResolver.isAccepted(result)) {
             mc.player.swingHand(Hand.MAIN_HAND);
         }
     }

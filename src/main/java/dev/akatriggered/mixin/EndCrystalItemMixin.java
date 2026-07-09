@@ -4,6 +4,7 @@ import dev.akatriggered.command.OptimizerCommand;
 import net.minecraft.item.EndCrystalItem;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.util.ActionResult;
+import dev.akatriggered.util.ActionResultResolver;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -20,7 +21,7 @@ public class EndCrystalItemMixin {
     @Inject(method = "useOnBlock", at = @At("HEAD"), cancellable = true)
     private void onUseOnBlock(ItemUsageContext context, CallbackInfoReturnable<ActionResult> cir) {
         if (OptimizerCommand.defaultMode) {
-            cir.setReturnValue(ActionResult.PASS);
+            cir.setReturnValue(ActionResultResolver.pass());
         }
     }
 }

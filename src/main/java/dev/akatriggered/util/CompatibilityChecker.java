@@ -9,7 +9,7 @@ import java.util.List;
 public class CompatibilityChecker {
 
     private static final String DISCORD = "discord.gg/vF5bE4strk";
-    private static final String ISSUES = "github.com/AkaTriggered/G1ax-Crystal-Optimizer/issues";
+    private static final String ISSUES = "github.com/tech-anupam/G1ax-Crystal-Optimizer/issues";
 
     private static final List<String> TESTED_VERSIONS = List.of(
         "1.21", "1.21.1", "1.21.2", "1.21.3", "1.21.4",
@@ -110,9 +110,9 @@ public class CompatibilityChecker {
     }
 
     private static CheckResult checkMixinTargets() {
-        boolean clientOk = classExists("net.minecraft.client.MinecraftClient");
-        boolean crystalOk = classExists("net.minecraft.item.EndCrystalItem");
-        boolean connOk = classExists("net.minecraft.network.ClientConnection");
+        boolean clientOk = classExists("net.minecraft.client.MinecraftClient") || classExists("net.minecraft.class_310");
+        boolean crystalOk = classExists("net.minecraft.item.EndCrystalItem") || classExists("net.minecraft.class_1774");
+        boolean connOk = classExists("net.minecraft.network.ClientConnection") || classExists("net.minecraft.class_2535");
 
         if (clientOk && crystalOk && connOk) return new CheckResult(true, null, null);
 
@@ -182,13 +182,20 @@ public class CompatibilityChecker {
 
     private static String getMcVersion() {
         try {
-            Object ver = Class.forName("net.minecraft.SharedConstants")
-                .getMethod("getGameVersion").invoke(null);
-            for (String m : new String[]{"getId", "getName", "getVersionId"}) {
-                try { return (String) ver.getClass().getMethod(m).invoke(ver); }
-                catch (Exception ignored) {}
-            }
-        } catch (Exception ignored) {}
-        return "unknown";
+            return net.fabricmc.loader.api.FabricLoader.getInstance()
+                .getModContainer("minecraft")
+                .map(container -> container.getMetadata().getVersion().getFriendlyString())
+                .orElse("unknown");
+        } catch (Throwable t) {
+            try {
+                Object ver = Class.forName("net.minecraft.SharedConstants")
+                    .getMethod("getGameVersion").invoke(null);
+                for (String m : new String[]{"getId", "getName", "getVersionId"}) {
+                    try { return (String) ver.getClass().getMethod(m).invoke(ver); }
+                    catch (Exception ignored) {}
+                }
+            } catch (Exception ignored) {}
+            return "unknown";
+        }
     }
 }

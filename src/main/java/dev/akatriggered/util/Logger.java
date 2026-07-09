@@ -35,7 +35,7 @@ public class Logger {
 
             String mcVer = getMinecraftVersion();
             writeLine("INIT", "═══════════════════════════════════════");
-            writeLine("INIT", " G1ax Crystal Optimizer  v1.0.1");
+            writeLine("INIT", " G1ax Crystal Optimizer  v" + VersionUtil.getModVersion());
             writeLine("INIT", " Minecraft : " + mcVer);
             writeLine("INIT", " Log file  : " + logFile.toAbsolutePath());
             writeLine("INIT", " Discord   : discord.gg/vF5bE4strk");
