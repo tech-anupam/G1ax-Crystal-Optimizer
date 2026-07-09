@@ -70,11 +70,10 @@ Disables all optimizations. Restores the default Minecraft PvP engine.
 
 ## 📊 Performance Comparison (70ms)
 
-*slowed down to show more detail*
 
 | With Mod | Without Mod |
 |:---:|:---:|
-| ![With Mod](https://raw.githubusercontent.com/tech-anupam/G1ax-Crystal-Optimizer/main/media/with_mod.gif) | ![Without Mod](https://raw.githubusercontent.com/tech-anupam/G1ax-Crystal-Optimizer/main/media/without_mod.gif) |
+| ![With Mod](https://cdn.modrinth.com/data/Xqnzyc08/images/7767bacd211b1067e496cee460a32039e95a3b0f.gif) | ![Without Mod](https://cdn.modrinth.com/data/Xqnzyc08/images/d9e6880b21ff5314f430337592de27b417fd1a0c.gif) |
 
 ---
 
