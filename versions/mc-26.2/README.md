@@ -1,6 +1,6 @@
-# 🔮 G1ax Crystal Optimizer
+# 🔮 G1ax Crystal Optimizer (Minecraft 26.2 Target)
 
-### High-Performance Crystal PvP Optimization for Minecraft (Fabric)
+### High-Performance Crystal PvP Optimization for Minecraft 26.2 & 26.1 (Fabric)
 
 <div align="center">
 
@@ -20,20 +20,13 @@ Developed by [**tech.anupam**](https://modrinth.com/user/tech.anupam) & the G1ax
 
 ---
 
-## 🗂️ Repository Structure & Version Directories
-
-This repository supports multiple versions of Minecraft across separate directories to ensure clean, isolated building and source control for legacy Yarn-mapped environments alongside the new Mojang unobfuscated mapping environments:
-
-- **Root Directory (`/`)**: Targets Minecraft **1.21.11** using standard Yarn mappings, compatible with JDK 21 and the older Fabric API.
-- **[`versions/mc-26.2/`](file:///d:/G1axProjects/Mods/G1ax-Crystal-Optimizer-main/G1ax-Crystal-Optimizer-main/versions/mc-26.2)**: Targets Minecraft **26.1.2 & 26.2** using official Mojang mappings, requiring Java 25 compiler target compatibility.
-
-### 🌟 Key Changes in Minecraft 26.2 Target (`versions/mc-26.2/`)
-Due to major changes in Minecraft 26.1+ and newer Fabric APIs, the following adaptations were implemented:
-1. **Flattened Record Packets**: `ServerboundInteractPacket` was converted by Mojang to a Java `record` class, removing the nested `Handler` / `Action` classes and visitor patterns. We adapted the crystal attack interceptor to check `interactPacket.hand() == null` directly to target attack actions.
-2. **Fabric API Registry Migration**: Modern Fabric APIs (for 26.2) renamed their payload registry methods. We migrated registries from `playS2C()` / `playC2S()` / `configurationS2C()` to `clientboundPlay()` / `serverboundPlay()` / `clientboundConfiguration()` to prevent client-side startup crashes.
-3. **Chat HUD Component Access**: Access to the chat HUD was modified to follow the `mc.gui.hud.getChat()` component tree, and local system message logs were changed to `addClientSystemMessage(Component)` to match the new client GUI class layout.
-
----
+> [!IMPORTANT]
+> **Minecraft 26.2 Branch Details**
+> This directory (`versions/mc-26.2`) contains the specialized build target for Minecraft **26.1.2 & 26.2** (Fabric).
+> - **Java Platform:** Requires Java 25 compiler compatibility (runs with JDK 25/26).
+> - **Mojang Mappings:** Utilizes Mojang's new official unobfuscated mapping environments.
+> - **API Migrations:** Implements mappings for `Identifier` (renamed from `ResourceLocation`), `ClientCommands` API, and the reorganized `mc.gui.hud.getChat()` component.
+> - **Record Packet Design:** Adapts to the newly flattened record structure of `ServerboundInteractPacket` by evaluating the `hand()` parameter to determine attack/removal states.
 
 ## 🚀 Overview
 
