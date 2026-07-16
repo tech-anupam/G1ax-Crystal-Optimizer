@@ -39,15 +39,25 @@ public class CrystalOptimizer {
 
         BlockPos targetPos = lookResult.getBlockPos();
         if (!isValidBase(targetPos)) return;
-        if (!isSpaceFree(targetPos.above())) return;
+
+        // Walk up any stacked obsidian/bedrock to find the topmost valid base block.
+        // This fixes the bug where looking at the lower block in a stack (e.g. two
+        // obsidians stacked) caused isSpaceFree to fail because the space directly
+        // above targetPos was occupied by the next obsidian, not air.
+        BlockPos actualBase = targetPos;
+        while (isValidBase(actualBase.above())) {
+            actualBase = actualBase.above();
+        }
+
+        if (!isSpaceFree(actualBase.above())) return;
 
         InteractionResult result = mc.gameMode.useItemOn(
             mc.player,
             InteractionHand.MAIN_HAND,
             new BlockHitResult(
-                Vec3.atCenterOf(targetPos).add(0, 0.5, 0),
+                Vec3.atCenterOf(actualBase).add(0, 0.5, 0),
                 Direction.UP,
-                targetPos,
+                actualBase,
                 false
             )
         );
