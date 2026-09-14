@@ -1,5 +1,31 @@
 # 🔮 G1ax Crystal Optimizer Release Notes
 
+## 🛠️ Version 1.0.6
+
+### Bug Fixes
+
+#### Mixin Startup Crash — `JAVA_25` Compatibility Level (mc-26.2)
+- Fixed a fatal startup crash on the mc-26.2 build: `IllegalArgumentException: The requested compatibility level JAVA_25 could not be set. Level is not supported by the active JRE or ASM version`.
+- Root cause: The mixin config for the mc-26.2 version declared `"compatibilityLevel": "JAVA_25"`, but the ASM version bundled with Fabric Loader (ASM 9.x) does not recognize `JAVA_25` as a valid level, causing Mixin initialization to abort before the game loads.
+- Fix: Downgraded the mixin compatibility level to `JAVA_21`. No Java 25-specific bytecode features are used in mixin classes, so `JAVA_21` is fully sufficient. The mod still compiles and targets Java 25 bytecode for non-mixin classes.
+- Reported by <@1017102539486928918> — thank you!
+
+#### Edge Crystal Placement (Both Versions)
+- Verified and confirmed the `findAdjacentBase` edge placement fix from v1.0.5 is active in both the root (1.21.11) and mc-26.2 builds.
+- When your crosshair hits neighboring grass/ground on an edge flick, the optimizer detects adjacent obsidian/bedrock and executes the placement correctly.
+
+### Improvements
+
+#### Better Command Help
+- `/g1axoptimizer` (no arguments) now displays a clean, detailed help screen showing:
+  - Mod name and current version (v1.0.6)
+  - Current active mode
+  - All available modes with clear descriptions of what each one does
+  - Discord support link
+- Replaces the old single-line usage hint with a properly formatted multi-line help output.
+
+---
+
 ## 🛠️ Version 1.0.5
 
 ### Bug Fixes

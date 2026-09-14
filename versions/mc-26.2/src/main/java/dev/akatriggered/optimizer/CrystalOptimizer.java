@@ -40,8 +40,6 @@ public class CrystalOptimizer {
         BlockPos targetPos = lookResult.getBlockPos();
         Direction hitFace = lookResult.getDirection();
 
-        // Edge fix: if the raycast hit a non-obsidian block (e.g. grass at the edge),
-        // check adjacent blocks for a valid obsidian/bedrock base.
         if (!isValidBase(targetPos)) {
             BlockPos found = findAdjacentBase(targetPos);
             if (found == null) return;
@@ -49,9 +47,6 @@ public class CrystalOptimizer {
             hitFace = Direction.UP;
         }
 
-        // Only walk up stacked obsidian when looking at the TOP face.
-        // Side-face hits should target the block directly to avoid
-        // climbing to unreachable positions on tall walls.
         BlockPos actualBase = targetPos;
         if (hitFace == Direction.UP) {
             while (isValidBase(actualBase.above())) {
@@ -59,9 +54,6 @@ public class CrystalOptimizer {
             }
         }
 
-        // Relaxed space check: only verify no blocking entities.
-        // Let the server validate block-level obstructions so placement
-        // works near stacked obsidian, slabs, and edges.
         if (!isSpaceFree(actualBase.above())) return;
 
         InteractionResult result = mc.gameMode.useItemOn(
@@ -97,26 +89,21 @@ public class CrystalOptimizer {
         return state.is(Blocks.OBSIDIAN) || state.is(Blocks.BEDROCK);
     }
 
-    /**
-     * Finds the nearest valid obsidian/bedrock base adjacent to the given position.
-     * Handles edge placement where the raycast narrowly misses the obsidian
-     * and hits the neighboring block instead.
-     */
     private static BlockPos findAdjacentBase(BlockPos hitPos) {
-        for (Direction dir : Direction.values()) {
-            BlockPos neighbor = hitPos.relative(dir);
-            if (isValidBase(neighbor)) {
-                return neighbor;
+        for (int dx = -1; dx <= 1; dx++) {
+            for (int dy = -1; dy <= 1; dy++) {
+                for (int dz = -1; dz <= 1; dz++) {
+                    if (dx == 0 && dy == 0 && dz == 0) continue;
+                    BlockPos neighbor = hitPos.offset(dx, dy, dz);
+                    if (isValidBase(neighbor)) {
+                        return neighbor;
+                    }
+                }
             }
         }
         return null;
     }
 
-    /**
-     * Relaxed space check — only verifies no blocking entities are present.
-     * Block-level validation (air checks) is left to the server so that
-     * placement works correctly near stacked obsidian, walls, and edges.
-     */
     private static boolean isSpaceFree(BlockPos above) {
         if (mc.level == null) return false;
         double x = above.getX(), y = above.getY(), z = above.getZ();
