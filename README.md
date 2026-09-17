@@ -106,4 +106,4 @@ Found something broken?
 
 ## License
 
-CC0
+MIT LICENSE
