@@ -10,7 +10,7 @@ G1ax Crystal Optimizer makes Crystal PvP more responsive by reducing unnecessary
 [![Modrinth Version](https://img.shields.io/modrinth/v/Xqnzyc08?style=for-the-badge\&logo=modrinth\&logoColor=white\&label=Version\&color=00AF5C)](https://modrinth.com/mod/g1axcrystaloptimizer)
 [![GitHub Stars](https://img.shields.io/github/stars/tech-anupam/G1ax-Crystal-Optimizer?style=for-the-badge\&logo=github\&logoColor=white\&color=181717)](https://github.com/tech-anupam/G1ax-Crystal-Optimizer)
 [![GitHub Issues](https://img.shields.io/github/issues/tech-anupam/G1ax-Crystal-Optimizer?style=for-the-badge\&logo=github\&logoColor=white\&color=E44B23)](https://github.com/tech-anupam/G1ax-Crystal-Optimizer/issues)
-[![License](https://img.shields.io/badge/License-CC0-555555?style=for-the-badge)](LICENSE)
+[![License](https://img.shields.io/badge/License-MIT?style=for-the-badge)](LICENSE)
 
 [![Minecraft](https://img.shields.io/badge/Minecraft-1.21.1%2B-3C8527?style=for-the-badge\&logo=minecraft\&logoColor=white)](https://www.minecraft.net/)
 [![Fabric](https://img.shields.io/badge/Fabric-Loader-DBD0B4?style=for-the-badge\&logo=fabric\&logoColor=111111)](https://fabricmc.net/)
