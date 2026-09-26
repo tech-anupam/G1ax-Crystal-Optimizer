@@ -1,0 +1,38 @@
+# Gradle
+.gradle/
+build/
+run/
+dist/
+*.jar
+
+# IDE
+.idea/
+.vscode/
+*.iml
+*.iws
+*.ipr
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+.classpath
+.project
+.settings/
+
+# Java
+*.class
+*.log
+*.ctxt
+.mtj.tmp/
+*.jar
+*.nar
+*.zip
+*.tar.gz
+*.rar
+
+# Output
+out/
+bin/
