@@ -49,3 +49,5 @@ dependency-reduced-pom.xml
 # Output
 out/
 bin/
+run/
+**/run/
