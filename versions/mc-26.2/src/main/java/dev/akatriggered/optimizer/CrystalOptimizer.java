@@ -2,6 +2,7 @@ package dev.akatriggered.optimizer;
 
 import dev.akatriggered.Main;
 import dev.akatriggered.cache.OptOutCache;
+import dev.akatriggered.command.OptimizerCommand;
 import dev.akatriggered.util.PerformanceGuard;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -40,11 +41,23 @@ public class CrystalOptimizer {
         BlockPos targetPos = lookResult.getBlockPos();
         Direction hitFace = lookResult.getDirection();
 
-        if (!isValidBase(targetPos)) {
-            BlockPos found = findAdjacentBase(targetPos);
-            if (found == null) return;
-            targetPos = found;
-            hitFace = Direction.UP;
+        if (OptimizerCommand.defaultMode) {
+            // Default mode: vanilla-like placement only.
+            // Crystal can only be placed when directly looking at the TOP face
+            // of an obsidian or bedrock block — no adjacent-block search, no
+            // side-face placement. This prevents accidental crystal placement
+            // when looking at nearby blocks, edges or corners that are not the
+            // actual obsidian/bedrock top face.
+            if (hitFace != Direction.UP) return;
+            if (!isValidBase(targetPos)) return;
+        } else {
+            // Non-default modes: allow the adjacent search for advanced placement.
+            if (!isValidBase(targetPos)) {
+                BlockPos found = findAdjacentBase(targetPos);
+                if (found == null) return;
+                targetPos = found;
+                hitFace = Direction.UP;
+            }
         }
 
         BlockPos actualBase = targetPos;
@@ -125,3 +138,4 @@ public class CrystalOptimizer {
         return hit instanceof BlockHitResult bhr ? bhr : null;
     }
 }
+
