@@ -52,6 +52,9 @@ public abstract class MinecraftClientMixin {
                 && ((MinecraftClientAccessor) this).getItemUseCooldown() > 0) {
                 ((MinecraftClientAccessor) this).setItemUseCooldown(0);
             }
+            if (((MinecraftClientAccessor) this).getAttackCooldown() > 0) {
+                ((MinecraftClientAccessor) this).setAttackCooldown(0);
+            }
         }
     }
 

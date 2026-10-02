@@ -52,6 +52,9 @@ public abstract class MinecraftClientMixin {
                 && ((MinecraftClientAccessor) this).getItemUseCooldown() > 0) {
                 ((MinecraftClientAccessor) this).setItemUseCooldown(0);
             }
+            if (((MinecraftClientAccessor) this).getAttackCooldown() > 0) {
+                ((MinecraftClientAccessor) this).setAttackCooldown(0);
+            }
         }
     }
 
@@ -75,7 +78,9 @@ public abstract class MinecraftClientMixin {
         if (!OptimizerCommand.defaultMode) return;
         Minecraft mc = (Minecraft)(Object) this;
         if (mc.player == null) return;
-        if (!mc.player.getMainHandItem().is(Items.END_CRYSTAL)) return;
+        boolean holdingCrystal = mc.player.getMainHandItem().is(Items.END_CRYSTAL)
+            || mc.player.getOffhandItem().is(Items.END_CRYSTAL);
+        if (!holdingCrystal) return;
         if (!mc.options.keyUse.isDown()) return;
         ci.cancel();
     }

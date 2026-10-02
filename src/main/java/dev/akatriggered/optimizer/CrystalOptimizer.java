@@ -2,6 +2,7 @@ package dev.akatriggered.optimizer;
 
 import dev.akatriggered.Main;
 import dev.akatriggered.cache.OptOutCache;
+import dev.akatriggered.command.OptimizerCommand;
 import dev.akatriggered.util.PerformanceGuard;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -30,7 +31,13 @@ public class CrystalOptimizer {
         OptOutCache cache = Main.getOptOutCache();
         if (guard == null || cache == null || cache.isOptedOut()) return;
         if (mc.player == null || mc.world == null) return;
-        if (!mc.player.getMainHandStack().isOf(Items.END_CRYSTAL)) return;
+        Hand hand = null;
+        if (mc.player.getMainHandStack().isOf(Items.END_CRYSTAL)) {
+            hand = Hand.MAIN_HAND;
+        } else if (mc.player.getOffHandStack().isOf(Items.END_CRYSTAL)) {
+            hand = Hand.OFF_HAND;
+        }
+        if (hand == null) return;
         if (!mc.options.useKey.isPressed()) return;
         if (!guard.allowPlaceBoost()) return;
 
@@ -40,11 +47,16 @@ public class CrystalOptimizer {
         BlockPos targetPos = lookResult.getBlockPos();
         Direction hitFace = lookResult.getSide();
 
-        if (!isValidBase(targetPos)) {
-            BlockPos found = findAdjacentBase(targetPos);
-            if (found == null) return;
-            targetPos = found;
-            hitFace = Direction.UP;
+        if (OptimizerCommand.defaultMode) {
+            if (hitFace != Direction.UP) return;
+            if (!isValidBase(targetPos)) return;
+        } else {
+            if (!isValidBase(targetPos)) {
+                BlockPos found = findAdjacentBase(targetPos);
+                if (found == null) return;
+                targetPos = found;
+                hitFace = Direction.UP;
+            }
         }
 
         BlockPos actualBase = targetPos;
@@ -58,7 +70,7 @@ public class CrystalOptimizer {
 
         ActionResult result = mc.interactionManager.interactBlock(
             mc.player,
-            Hand.MAIN_HAND,
+            hand,
             new BlockHitResult(
                 Vec3d.ofCenter(actualBase).add(0, 0.5, 0),
                 Direction.UP,
@@ -68,7 +80,7 @@ public class CrystalOptimizer {
         );
 
         if (dev.akatriggered.util.ActionResultResolver.isAccepted(result)) {
-            mc.player.swingHand(Hand.MAIN_HAND);
+            mc.player.swingHand(hand);
         }
     }
 
@@ -107,9 +119,16 @@ public class CrystalOptimizer {
     private static boolean isSpaceFree(BlockPos above) {
         if (mc.world == null) return false;
         double x = above.getX(), y = above.getY(), z = above.getZ();
-        List<Entity> blocking = mc.world.getOtherEntities(mc.player,
-            new Box(x, y, z, x + 1.0, y + 2.0, z + 1.0));
-        return blocking.isEmpty();
+        List<Entity> blocking = mc.world.getOtherEntities(
+            mc.player,
+            new Box(x, y, z, x + 1.0, y + 2.0, z + 1.0)
+        );
+        for (Entity e : blocking) {
+            if (e != null && e.isAlive()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private static BlockHitResult raycastBlocks(double reach) {

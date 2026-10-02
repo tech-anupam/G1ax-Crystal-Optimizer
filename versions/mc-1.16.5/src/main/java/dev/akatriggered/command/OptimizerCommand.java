@@ -70,14 +70,30 @@ public class OptimizerCommand {
 
     public static void actionBar(String raw) {
         MinecraftClient mc = MinecraftClient.getInstance();
-        if (mc.player == null || mc.inGameHud == null) return;
-        mc.inGameHud.setOverlayMessage(fromLegacy(raw), false);
+        if (mc.player == null) return;
+        try {
+            mc.player.sendMessage(fromLegacy(raw), true);
+            return;
+        } catch (Throwable ignored) {}
+        try {
+            if (mc.inGameHud != null) {
+                mc.inGameHud.setOverlayMessage(fromLegacy(raw), false);
+            }
+        } catch (Throwable ignored) {}
     }
 
     public static void msg(String raw) {
         MinecraftClient mc = MinecraftClient.getInstance();
-        if (mc.player == null || mc.inGameHud == null) return;
-        mc.inGameHud.getChatHud().addMessage(fromLegacy(raw));
+        if (mc.player == null) return;
+        try {
+            mc.player.sendMessage(fromLegacy(raw), false);
+            return;
+        } catch (Throwable ignored) {}
+        try {
+            if (mc.inGameHud != null && mc.inGameHud.getChatHud() != null) {
+                mc.inGameHud.getChatHud().addMessage(fromLegacy(raw));
+            }
+        } catch (Throwable ignored) {}
     }
 
     private static MutableText fromLegacy(String raw) {

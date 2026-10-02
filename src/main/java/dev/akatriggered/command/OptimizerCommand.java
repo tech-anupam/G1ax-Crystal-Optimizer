@@ -60,7 +60,7 @@ public class OptimizerCommand {
                 .executes(ctx -> {
                     String mode = defaultMode ? "§aDefault" : tweakMode ? "§eTweak §7(AC-safe)" : "§cOff";
                     msg("");
-                    msg(PREFIX + "§f§lG1ax Crystal Optimizer §7v1.0.6");
+                    msg(PREFIX + "§f§lG1ax Crystal Optimizer §7v1.0.7");
                     msg(PREFIX + "§7Current Mode: " + mode);
                     msg("");
                     msg(PREFIX + "§e/g1axoptimizer default §8— §7Full optimizer: fast placement,");
@@ -83,14 +83,30 @@ public class OptimizerCommand {
     /** Sends a message to the action bar (above the hotbar) — non-intrusive, no chat clutter. */
     public static void actionBar(String raw) {
         MinecraftClient mc = MinecraftClient.getInstance();
-        if (mc.player == null || mc.inGameHud == null) return;
-        mc.inGameHud.setOverlayMessage(fromLegacy(raw), false);
+        if (mc.player == null) return;
+        try {
+            mc.player.sendMessage(fromLegacy(raw), true);
+            return;
+        } catch (Throwable ignored) {}
+        try {
+            if (mc.inGameHud != null) {
+                mc.inGameHud.setOverlayMessage(fromLegacy(raw), false);
+            }
+        } catch (Throwable ignored) {}
     }
 
     public static void msg(String raw) {
         MinecraftClient mc = MinecraftClient.getInstance();
-        if (mc.player == null || mc.inGameHud == null || mc.inGameHud.getChatHud() == null) return;
-        mc.inGameHud.getChatHud().addMessage(fromLegacy(raw));
+        if (mc.player == null) return;
+        try {
+            mc.player.sendMessage(fromLegacy(raw), false);
+            return;
+        } catch (Throwable ignored) {}
+        try {
+            if (mc.inGameHud != null && mc.inGameHud.getChatHud() != null) {
+                mc.inGameHud.getChatHud().addMessage(fromLegacy(raw));
+            }
+        } catch (Throwable ignored) {}
     }
 
     private static MutableText fromLegacy(String raw) {

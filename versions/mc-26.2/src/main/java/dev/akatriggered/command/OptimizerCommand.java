@@ -74,14 +74,36 @@ public class OptimizerCommand {
     /** Sends a message to the action bar (above the hotbar) — non-intrusive, no chat clutter. */
     public static void actionBar(String raw) {
         Minecraft mc = Minecraft.getInstance();
-        if (mc.player == null || mc.gui == null || mc.gui.hud == null) return;
-        mc.gui.hud.setOverlayMessage(fromLegacy(raw), false);
+        if (mc.player == null) return;
+        try {
+            mc.player.sendOverlayMessage(fromLegacy(raw));
+            return;
+        } catch (Throwable ignored) {}
+        try {
+            for (java.lang.reflect.Method m : mc.player.getClass().getMethods()) {
+                if (m.getName().equals("displayClientMessage") && m.getParameterCount() == 2) {
+                    m.invoke(mc.player, fromLegacy(raw), true);
+                    return;
+                }
+            }
+        } catch (Throwable ignored) {}
     }
 
     public static void msg(String raw) {
         Minecraft mc = Minecraft.getInstance();
-        if (mc.player == null || mc.gui == null || mc.gui.hud == null || mc.gui.hud.getChat() == null) return;
-        mc.gui.hud.getChat().addClientSystemMessage(fromLegacy(raw));
+        if (mc.player == null) return;
+        try {
+            mc.player.sendSystemMessage(fromLegacy(raw));
+            return;
+        } catch (Throwable ignored) {}
+        try {
+            for (java.lang.reflect.Method m : mc.player.getClass().getMethods()) {
+                if (m.getName().equals("displayClientMessage") && m.getParameterCount() == 2) {
+                    m.invoke(mc.player, fromLegacy(raw), false);
+                    return;
+                }
+            }
+        } catch (Throwable ignored) {}
     }
 
     private static MutableComponent fromLegacy(String raw) {

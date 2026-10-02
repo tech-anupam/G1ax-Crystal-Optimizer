@@ -31,7 +31,13 @@ public class CrystalOptimizer {
         OptOutCache cache = Main.getOptOutCache();
         if (guard == null || cache == null || cache.isOptedOut()) return;
         if (mc.player == null || mc.level == null) return;
-        if (!mc.player.getMainHandItem().is(Items.END_CRYSTAL)) return;
+        InteractionHand hand = null;
+        if (mc.player.getMainHandItem().is(Items.END_CRYSTAL)) {
+            hand = InteractionHand.MAIN_HAND;
+        } else if (mc.player.getOffhandItem().is(Items.END_CRYSTAL)) {
+            hand = InteractionHand.OFF_HAND;
+        }
+        if (hand == null) return;
         if (!mc.options.keyUse.isDown()) return;
         if (!guard.allowPlaceBoost()) return;
 
@@ -71,7 +77,7 @@ public class CrystalOptimizer {
 
         InteractionResult result = mc.gameMode.useItemOn(
             mc.player,
-            InteractionHand.MAIN_HAND,
+            hand,
             new BlockHitResult(
                 Vec3.atCenterOf(actualBase).add(0, 0.5, 0),
                 Direction.UP,
@@ -81,7 +87,7 @@ public class CrystalOptimizer {
         );
 
         if (dev.akatriggered.util.ActionResultResolver.isAccepted(result)) {
-            mc.player.swing(InteractionHand.MAIN_HAND);
+            mc.player.swing(hand);
         }
     }
 
@@ -122,7 +128,12 @@ public class CrystalOptimizer {
         double x = above.getX(), y = above.getY(), z = above.getZ();
         List<Entity> blocking = mc.level.getEntities(mc.player,
             new AABB(x, y, z, x + 1.0, y + 2.0, z + 1.0));
-        return blocking.isEmpty();
+        for (Entity e : blocking) {
+            if (e != null && e.isAlive()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private static BlockHitResult raycastBlocks(double reach) {
