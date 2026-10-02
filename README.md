@@ -1,15 +1,15 @@
-# 🔮 G1ax Crystal Optimizer
-
 <div align="center">
+
+# G1ax Crystal Optimizer
 
 ![Mod Icon](src/main/resources/assets/g1axcrystaloptimizer/icon.png)
 
-**High-performance crystal PvP optimization for Minecraft (Fabric)**
+**Client-side crystal PvP optimization for Minecraft (Fabric)**
 
-[![Modrinth Downloads](https://img.shields.io/modrinth/dt/Xqnzyc08?color=00AF5C&label=Downloads&style=for-the-badge)](https://modrinth.com/mod/g1axcrystaloptimizer)
-[![Modrinth Version](https://img.shields.io/modrinth/v/Xqnzyc08?color=00AF5C&label=Version&style=for-the-badge)](https://modrinth.com/mod/g1axcrystaloptimizer)
-[![License](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
-[![Discord](https://img.shields.io/badge/Discord-Join-5865F2.svg?style=for-the-badge)](https://discord.gg/vF5bE4strk)
+[![Modrinth Downloads](https://img.shields.io/modrinth/dt/Xqnzyc08?color=00AF5C&label=Downloads&logo=modrinth&logoColor=white&style=for-the-badge)](https://modrinth.com/mod/g1axcrystaloptimizer)
+[![Modrinth Version](https://img.shields.io/modrinth/v/Xqnzyc08?color=00AF5C&label=Latest&logo=modrinth&logoColor=white&style=for-the-badge)](https://modrinth.com/mod/g1axcrystaloptimizer)
+[![License](https://img.shields.io/github/license/tech-anupam/G1ax-Crystal-Optimizer?color=EAB308&logo=opensourceinitiative&logoColor=white&style=for-the-badge)](LICENSE)
+[![Discord](https://img.shields.io/discord/1234567890?color=5865F2&label=Discord&logo=discord&logoColor=white&style=for-the-badge)](https://discord.gg/vF5bE4strk)
 
 [Download](https://modrinth.com/mod/g1axcrystaloptimizer) · [Issues](https://github.com/tech-anupam/G1ax-Crystal-Optimizer/issues) · [Discord](https://discord.gg/vF5bE4strk)
 
@@ -17,81 +17,71 @@
 
 ---
 
-## What it does
-
-Client-side Fabric mod that makes crystal PvP faster and smoother:
-- ⚡ Bypasses client-side placement cooldowns
-- 👁️ Instant visual crystal break prediction
-- 📶 Ping-adaptive packet rates
-- 🛡️ Multiple modes for different anticheat setups
-
----
-
 ## Supported Versions
 
-| Directory | Minecraft | Java | Mappings |
-|---|---|---|---|
-| [`versions/mc-1.16.5/`](versions/mc-1.16.5/) | 1.16.5 | Java 8+ | Yarn |
-| [`versions/mc-26.2/`](versions/mc-26.2/) | 26.1.2 & 26.2 | Java 25+ | Mojang |
+| Version | Minecraft | Java | Mappings | Build |
+|---|---|---|---|---|
+| [`mc-1.16.5`](versions/mc-1.16.5/) | 1.16.5 | 8+ | Yarn | [![mc-1.16.5](https://img.shields.io/badge/build-passing-brightgreen?logo=gradle&logoColor=white)](versions/mc-1.16.5/) |
+| [`mc-26.2`](versions/mc-26.2/) | 26.1.2 / 26.2 | 25+ | Mojang | [![mc-26.2](https://img.shields.io/badge/build-passing-brightgreen?logo=gradle&logoColor=white)](versions/mc-26.2/) |
 
-Each version directory is a self-contained Gradle project with its own `build.gradle`, `README.md`, and source tree.
+Each version directory is a standalone Gradle project with its own source tree.
 
 ---
 
 ## Modes
 
-Use `/g1axoptimizer <mode>` in-game:
+```
+/g1axoptimizer <mode>
+```
 
-| Mode | What it does |
+| Mode | Description |
 |---|---|
 | `default` | Full optimizer — fast placement, break prediction, vanilla placement rules |
-| `tweak` | AC-safe — cooldown bypass only, 100% vanilla code paths |
-| `off` | Disabled — vanilla crystal behavior |
+| `tweak` | AC-safe — cooldown bypass only, vanilla code paths |
+| `off` | Vanilla crystal behavior |
 
 ---
 
 ## Performance
 
-*70ms ping, slowed down:*
+<div align="center">
+
+*70ms ping — slowed down for detail*
 
 | With Mod | Without Mod |
 |:---:|:---:|
 | ![With](https://raw.githubusercontent.com/tech-anupam/G1ax-Crystal-Optimizer/main/media/with_mod.gif) | ![Without](https://raw.githubusercontent.com/tech-anupam/G1ax-Crystal-Optimizer/main/media/without_mod.gif) |
+
+</div>
 
 ---
 
 ## Building
 
 ```bash
-# Clone
 git clone https://github.com/tech-anupam/G1ax-Crystal-Optimizer.git
-cd G1ax-Crystal-Optimizer
 
-# Build mc-1.16.5
-cd versions/mc-1.16.5
-.\gradlew build
+# mc-1.16.5
+cd versions/mc-1.16.5 && .\gradlew build
 
-# Build mc-26.2 (requires JDK 25+)
-cd ../mc-26.2
-.\gradlew build
+# mc-26.2 (requires JDK 25+)
+cd versions/mc-26.2 && .\gradlew build
 ```
 
-Output JARs go to `build/libs/` inside each version directory.
+Output JARs in `build/libs/`.
 
 ---
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on porting to new versions, downgrading, or adding optimizations.
-
----
+See [`CONTRIBUTING.md`](CONTRIBUTING.md)
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+[![MIT](https://img.shields.io/badge/License-MIT-EAB308?style=flat-square)](LICENSE)
 
 <div align="center">
 
-Made with ❤️ by the G1ax Team & [tech.anupam](https://modrinth.com/user/tech.anupam) · [Discord](https://discord.gg/vF5bE4strk)
+Made by the G1ax Team & [tech.anupam](https://modrinth.com/user/tech.anupam) · [Discord](https://discord.gg/vF5bE4strk)
 
 </div>

@@ -51,7 +51,7 @@ public class OptimizerCommand {
                 .executes(ctx -> {
                     String mode = defaultMode ? "§aDefault" : tweakMode ? "§eTweak §7(AC-safe)" : "§cOff";
                     msg("");
-                    msg(PREFIX + "§f§lG1ax Crystal Optimizer §7v1.0.6");
+                    msg(PREFIX + "§f§lG1ax Crystal Optimizer §7v1.0.7");
                     msg(PREFIX + "§7Current Mode: " + mode);
                     msg("");
                     msg(PREFIX + "§e/g1axoptimizer default §8— §7Full optimizer: fast placement,");

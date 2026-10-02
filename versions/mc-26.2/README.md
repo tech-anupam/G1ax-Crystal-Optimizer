@@ -25,7 +25,7 @@
 | **Mappings** | Mojang (official) |
 | **Fabric Loader** | 0.19.3 |
 | **Fabric API** | 0.154.2+26.2 |
-| **Mod Version** | 1.0.6 |
+| **Mod Version** | 1.0.7 |
 
 ---
 

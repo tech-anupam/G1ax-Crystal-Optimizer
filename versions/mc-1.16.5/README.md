@@ -25,7 +25,7 @@
 | **Mappings** | Yarn (`1.16.5+build.10`) |
 | **Fabric Loader** | 0.16.10 |
 | **Fabric API** | 0.42.0+1.16 |
-| **Mod Version** | 1.0.6 |
+| **Mod Version** | 1.0.7 |
 
 ---
 
