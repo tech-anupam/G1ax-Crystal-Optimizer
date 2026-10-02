@@ -42,17 +42,12 @@ Each version directory is a standalone Gradle project with its own source tree.
 
 ---
 
-## Performance
 
-<div align="center">
+## Comparison (90 ms/ping)
 
-*70ms ping — slowed down for detail*
-
-| With Mod | Without Mod |
-|:---:|:---:|
-| ![With](https://raw.githubusercontent.com/tech-anupam/G1ax-Crystal-Optimizer/main/media/with_mod.gif) | ![Without](https://raw.githubusercontent.com/tech-anupam/G1ax-Crystal-Optimizer/main/media/without_mod.gif) |
-
-</div>
+| Optimized | Vanilla |
+| --- | --- |
+| <img src="https://cdn.modrinth.com/data/Xqnzyc08/images/7767bacd211b1067e496cee460a32039e95a3b0f.gif" width="360"> | <img src="https://cdn.modrinth.com/data/Xqnzyc08/images/d9e6880b21ff5314f430337592de27b417fd1a0c.gif" width="360"> |
 
 ---
 
